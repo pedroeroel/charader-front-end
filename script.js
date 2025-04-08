@@ -222,3 +222,56 @@ document.addEventListener('DOMContentLoaded', function () {
         showCharades(data)
     }, 1500);
 });
+
+async function newCharadeList(dict) {
+    console.log("Trying to create a new charade list...");
+
+    let num = 0
+
+    for (const charade of dict) {
+
+        num += 1
+
+        const question = charade.charade;
+        const answerToCharade = charade.answer;
+        
+        if (!question || !answerToCharade) {
+            alert("Please fill in both the question and the answer.");
+            return;
+        }
+        
+        const newCharade = {
+            charade: question,
+            answer: answerToCharade
+        };
+        
+        try {
+            const responseHttp = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newCharade)
+            });
+            
+            const apiResult = await responseHttp.json();
+            
+            if (!responseHttp.ok) {
+                throw new Error(apiResult.message || `Error creating charade: ${responseHttp.status}`);
+            }
+            
+            console.log(`Charade ${num} created successfully!`, apiResult);
+            
+            inputCharadeCreation.value = '';
+            inputAnswerCreation.value = '';
+            
+            await showCharades();
+            
+        } catch (error) {
+            console.error("Failed to create charade:", error);
+            alert(`Error creating charade: ${error.message}`);
+        }
+    }
+
+    console.log('Successfully created charade list!')
+}
