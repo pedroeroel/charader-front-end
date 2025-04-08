@@ -3,7 +3,6 @@ const userAnswer = document.querySelector("#userAnswer");
 const resultElement = document.querySelector("#resultElement");
 let edit = false;
 const url = `https://charader-senai.vercel.app/api/charades`;
-const creationURL = `https://charader-senai.vercel.app/api/new-charade`;
 const listURL = `https://charader-senai.vercel.app/api/charades/list`;
 
 let creationForm = document.querySelector('#create-form');
@@ -93,6 +92,7 @@ function showCharades(charades) {
     console.log("Updating the charade list on the screen...");
     charadeListElement.innerHTML = '';
     if (!charades || charades.length === 0) {
+        charadeListElement.style.color = 'black';
         charadeListElement.innerHTML = '<p>No charades registered yet.</p>';
         return;
     }
@@ -102,8 +102,8 @@ function showCharades(charades) {
         charadeElementDiv.id = `charade-${charade.id}`;
         charadeElementDiv.innerHTML = `
             <div class="flex-grow mr-3">
-                <strong>${charade.charade}</strong>
-                <p><small>Answer: ${charade.answer || 'Not defined'}</small></p>
+                <strong class="charade-question">${charade.charade}</strong>
+                <p><small class="charade-answer">Answer: ${charade.answer || 'Not defined'}</small></p>
                 <p><small>ID: ${charade.id}</small></p>
             </div>
             <div>
@@ -114,19 +114,107 @@ function showCharades(charades) {
         const editButton = charadeElementDiv.querySelector('.edit-btn');
         editButton.addEventListener('click', function() {
             console.log(`Edit button clicked for charade ID: ${charade.id}`);
-            
-            alert(`The functionality to edit charade ${charade.id} is not ready yet! 😉`);
-        });
-        const deleteButton = charadeElementDiv.querySelector('.delete-btn');
-        deleteButton.addEventListener('click', function() {
-            console.log(`Delete button clicked for charade ID: ${charade.id}`);
 
-            alert(`Careful! The functionality to delete charade ${charade.id} doesn't work yet! 😬`);
+            inputUpdateID.value = charade.id;
+            inputCharadeUpdate.value = charade.charade;
+            inputAnswerUpdate.value = charade.answer;
+            updateForm.style.display = 'block';
+            creationForm.style.display = 'none';
+            edit = true
+        });
+
+        const deleteButton = charadeElementDiv.querySelector('.delete-btn');
+        deleteButton.addEventListener('click', async function() {
+            console.log(`Delete button clicked for charade ID: ${charade.id}`);
+            const confirmDelete = confirm(`Are you sure you want to delete charade ID ${charade.id}?`);
+            if (confirmDelete) {
+                try {
+                    const deleteUrl = `${url}/${charade.id}`;
+                    const response = await fetch(deleteUrl, {
+                        method: 'DELETE',
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        console.log('Charade deleted successfully:', result);
+                        alert(result.message);
+                        await getCharadeList()
+                        showCharades(data);
+                    } else {
+                        console.error('Error deleting charade:', result);
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Failed to delete charade:', error);
+                    alert(`Failed to delete charade: ${error.message}`);
+                }
+            }
         });
         charadeListElement.appendChild(charadeElementDiv);
     }
 }
 
+updateForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    if (edit) {
+        const updateId = inputUpdateID.value;
+        const updatedQuestion = inputCharadeUpdate.value;
+        const updatedAnswer = inputAnswerUpdate.value;
+
+        if (!updatedQuestion || !updatedAnswer) {
+            alert("Please fill in both the question and the answer for the update.");
+            return;
+        }
+
+        const updatedCharade = {
+            charade: updatedQuestion,
+            answer: updatedAnswer
+        };
+
+        try {
+            const updateUrl = `${url}/${updateId}`;
+            const response = await fetch(updateUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedCharade)
+            });
+
+            const apiResult = await response.json();
+
+            if (!response.ok) {
+                throw new Error(apiResult.message || `Error updating charade: ${response.status}`);
+            }
+
+            console.log("Charade updated successfully!", apiResult);
+            alert(apiResult.message);
+
+            updateForm.style.display = 'none';
+            creationForm.style.display = 'block';
+            inputUpdateID.value = '';
+            inputCharadeUpdate.value = '';
+            inputAnswerUpdate.value = '';
+            edit = false;
+
+            await getCharadeList();
+            showCharades(data);
+
+        } catch (error) {
+            console.error("Failed to update charade:", error);
+            alert(`Error updating charade: ${error.message}`);
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM was fully loaded.');
+    getCharadeList();
+    setTimeout(() => {
+        showCharades(data);
+    }, 1500);
+});
+
+creationForm.addEventListener('submit', newCharade);
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM was fully loaded.');
     getCharadeList();
@@ -134,5 +222,3 @@ document.addEventListener('DOMContentLoaded', function () {
         showCharades(data)
     }, 1500);
 });
-
-creationForm.addEventListener('submit', newCharade)
