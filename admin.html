@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Charades</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100">
+
+    <header class="lg:fixed w-full flex justify-center">
+        <nav
+            class="w-screen lg:w-4xl xl:w-6xl 2xl:w-7xl text-zinc-700 flex justify-between py-3 px-6 shadow lg:rounded-2xl backdrop-blur-md bg-transparent sm:m-0 lg:my-6">
+            <a class="text-2xl font-medium opacity-75">Admin Charades</a>
+            <a class="text-zinc-700 opacity-75">(▀̿Ĺ̯▀̿ ̿) Admin Panel</a>
+        </nav>
+    </header>
+
+    <main class="transition-[height] duration-200 w-full min-h-160 md:pt-20 lg:p-20 lg:pt-30">
+        <section class="lg:shadow p-15 lg:rounded-3xl">
+            <h2 class="font-medium text-3xl mb-6">(▀̿Ĺ̯▀̿ ̿) Charades Admin Panel</h2>
+            <hr class="border-gray-400 my-6 h-px">
+
+            <form id="create-form" class="mb-8 p-6 border rounded bg-gray-200">
+                <h2 class="text-lg font-semibold mb-4">Add New Charade</h2>
+                <div class="mb-3">
+                    <label for="create-charade-input" class="block text-sm font-medium text-gray-700">Question:</label>
+                    <input type="text" id="create-charade-input" class="mt-1 p-2 border rounded w-full" required placeholder="Enter the charade question">
+                </div>
+                <div class="mb-3">
+                    <label for="create-answer-input" class="block text-sm font-medium text-gray-700">Answer:</label>
+                    <input type="text" id="create-answer-input" class="mt-1 p-2 border rounded w-full" required placeholder="Enter the answer">
+                </div>
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">Add Charade</button>
+            </form>
+
+            <form id="update-form" class="mb-8 p-6 border rounded bg-gray-200 hidden">
+                <h2 class="text-lg font-semibold mb-4">Edit Charade</h2>
+                <input type="hidden" id="update-id">
+                <div class="mb-3">
+                    <label for="update-charade-input" class="block text-sm font-medium text-gray-700">Question:</label>
+                    <input type="text" id="update-charade-input" class="mt-1 p-2 border rounded w-full" required>
+                </div>
+                <div class="mb-3">
+                    <label for="update-answer-input" class="block text-sm font-medium text-gray-700">Answer:</label>
+                    <input type="text" id="update-answer-input" class="mt-1 p-2 border rounded w-full" required>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">Save Changes</button>
+                    <button type="button" id="cancel-update" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded transition duration-300">Cancel Edit</button>
+                </div>
+            </form>
+
+            <hr class="border-gray-400 my-6 h-px">
+
+            <h2 class="text-lg font-semibold mb-4">Registered Charades</h2>
+            <div id="charade-list" class="transition-[height]">
+                <p id="loading-element" class="text-center text-2xl font-bold text-transparent">Loading charades...</p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 flex justify-center items-center h-20 w-full">
+        <p class="text-white text-center">All rights reserved © - Pedro Eduardo Roel</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
