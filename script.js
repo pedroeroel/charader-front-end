@@ -21,7 +21,7 @@ async function getCharadeList() {
     try {
         let response = await fetch(listURL);
 
-        if (!response) {
+        if (!response || response.status >= 400) {
             throw new Error(`API ERROR: ${response.status}, ${response.statusText}`);
         }
 
@@ -29,7 +29,7 @@ async function getCharadeList() {
 
         loadingElement.style.transition = 'color ease-in-out 200ms';
         loadingElement.style.color = 'black';
-        setTimeout(() => {
+        setTimeout(() => {  
             loadingElement.style.color = "transparent";
         }, 500);
 
@@ -96,6 +96,8 @@ function showCharades(charades) {
         charadeListElement.innerHTML = '<p>No charades registered yet.</p>';
         return;
     }
+
+    
     for (const charade of charades) {
         const charadeElementDiv = document.createElement('div');
         charadeElementDiv.classList.add('border', 'border-gray-300', 'p-2', 'mb-3', 'rounded', 'flex', 'justify-between', 'items-center');
@@ -151,6 +153,59 @@ function showCharades(charades) {
         });
         charadeListElement.appendChild(charadeElementDiv);
     }
+}
+
+async function newCharadeList(dict) {
+    console.log("Trying to create a new charade list...");
+
+    let num = 0
+
+    for (const charade of dict) {
+
+        num += 1
+
+        const question = charade.charade;
+        const answerToCharade = charade.answer;
+        
+        if (!question || !answerToCharade) {
+            alert("Please fill in both the question and the answer.");
+            return;
+        }
+        
+        const newCharade = {
+            charade: question,
+            answer: answerToCharade
+        };
+        
+        try {
+            const responseHttp = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newCharade)
+            });
+            
+            const apiResult = await responseHttp.json();
+            
+            if (!responseHttp.ok) {
+                throw new Error(apiResult.message || `Error creating charade: ${responseHttp.status}`);
+            }
+            
+            console.log(`Charade ${num} created successfully!`, apiResult);
+            
+            inputCharadeCreation.value = '';
+            inputAnswerCreation.value = '';
+            
+        } catch (error) {
+            console.error("Failed to create charade:", error);
+            alert(`Error creating charade: ${error.message}`);
+        }
+    }
+
+    await showCharades()
+
+    console.log('Successfully created charade list!')
 }
 
 updateForm.addEventListener('submit', async function(event) {
@@ -222,56 +277,3 @@ document.addEventListener('DOMContentLoaded', function () {
         showCharades(data)
     }, 1500);
 });
-
-async function newCharadeList(dict) {
-    console.log("Trying to create a new charade list...");
-
-    let num = 0
-
-    for (const charade of dict) {
-
-        num += 1
-
-        const question = charade.charade;
-        const answerToCharade = charade.answer;
-        
-        if (!question || !answerToCharade) {
-            alert("Please fill in both the question and the answer.");
-            return;
-        }
-        
-        const newCharade = {
-            charade: question,
-            answer: answerToCharade
-        };
-        
-        try {
-            const responseHttp = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newCharade)
-            });
-            
-            const apiResult = await responseHttp.json();
-            
-            if (!responseHttp.ok) {
-                throw new Error(apiResult.message || `Error creating charade: ${responseHttp.status}`);
-            }
-            
-            console.log(`Charade ${num} created successfully!`, apiResult);
-            
-            inputCharadeCreation.value = '';
-            inputAnswerCreation.value = '';
-            
-            await showCharades();
-            
-        } catch (error) {
-            console.error("Failed to create charade:", error);
-            alert(`Error creating charade: ${error.message}`);
-        }
-    }
-
-    console.log('Successfully created charade list!')
-}
