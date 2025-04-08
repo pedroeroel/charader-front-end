@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Charader - Roel's Notebook</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <header class=" lg:fixed w-full flex justify-center">
+        <nav
+            class="w-screen  lg:w-4xl xl:w-6xl 2xl:w-7xl text-zinc-700 flex justify-between py-3 px-6 shadow lg:rounded-2xl backdrop-blur-md bg-transparent sm:m-0 lg:my-6">
+            <a class="text-2xl font-medium opacity-75">Roel's Notebook</a>
+
+            <a class="text-zinc-700 opacity-75">This is a charade game.</a>
+        </nav>
+    </header>
+
+    <main class="transition-[height] duration-200 w-full min-h-160 md:pt-20 lg:p-20 lg:pt-30">
+        <section class="lg:shadow p-15 lg:rounded-3xl">
+            <h2 class="font-medium text-3xl">Want A Charade?</h2>
+            <hr class="border-gray-400 my-6 h-px">
+            <div class="flex gap-6 flex-col justify-center transition duration-200 py-5">
+                <div class="flex flex-col gap-2 items-center">
+                    <div class="flex justify-center">
+                        <input type="number" class="border-2 w-12.5 text-center border-e-0 border-blue-600 rounded-s-xl p-2 font-sm text-md" id="charadeId">
+                        <button onclick="getCharade()" class="rounded-e-xl bg-blue-600 text-white hover:text-blue-600 hover:bg-transparent border-blue-600 border-2 p-2 transition duration-300">Get Charade</button>
+                    </div>
+                    
+                    <label class="text-gray-400" for="">Escolha o ID, caso vazio irá retornar uma charada aleatória.</label>
+            
+                </div>
+                <div class="w-full" id="charadeField">
+                    <p class="text-center text-2xl font-bold text-transparent" id="charade">Qual será a charada de hoje?</p>
+                </div>
+            
+                <div class="flex flex-col gap-2 items-center">
+                    <div class="flex justify-center">
+                        <input type="text" id="userAnswer" class="border-2 border-e-0 border-green-500 p-2 rounded-s-xl" placeholder="Your Answer">
+                        <button onclick="verifyAnswer()" id="verifyButton" class="bg-transparent border-2 border-green-500 text-green-500 transition duration-200 p-2 hover:text-white hover:bg-green-500">Verify</button>
+                        <button onclick="revealAnswer()" class="bg-transparent border-2 border-yellow-500 text-yellow-500 transition duration-200 rounded-e-xl p-2 border-s-0 hover:text-white hover:bg-yellow-500">Reveal Answer</button>
+                    </div>
+                
+                    <label class="text-gray-400" for="">Digite apenas uma palavra.</label>
+            
+                </div>
+                
+                <p id="resultElement" class="text-center text-transparent">text-transparent</p>
+            </div> 
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 flex justify-center items-center h-20 w-full">
+        <p class="text-white text-center">All rights reserved © - Pedro Eduardo Roel</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
